@@ -1,0 +1,10 @@
+name = "spanish-tutor"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Where your app is hosted (GitHub Pages origin, no path). Comma-separate several.
+ALLOWED_ORIGIN = "https://borisstermeneer.github.io"
+# Claude model (chosen: best quality). claude-haiku-5-5 is ~40x cheaper; see README.
+MODEL = "claude-opus-5-5"
