@@ -36,6 +36,15 @@ export function stripAccents(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').normalize('NFC')
 }
 
+/** Pairs where the written accent distinguishes two different words. */
+const DIACRITIC_WORDS = new Set(['tu', 'tú', 'el', 'él', 'mi', 'mí', 'te', 'té', 'se', 'sé', 'si', 'sí', 'de', 'dé', 'mas', 'más'])
+
+function changesMeaning(given: string, target: string): boolean {
+  const gw = given.split(' ')
+  const tw = target.split(' ')
+  return tw.some((w, i) => w !== gw[i] && DIACRITIC_WORDS.has(w) && DIACRITIC_WORDS.has(gw[i] ?? ''))
+}
+
 export function levenshtein(a: string, b: string): number {
   if (a === b) return 0
   if (!a.length) return b.length
@@ -86,7 +95,12 @@ export function checkAnswer(given: string, accepted: string[], opts: { allowTypo
   for (const v of vs) if (v === g) return { verdict: 'correct', expected: v }
 
   const gs = stripAccents(g)
-  for (const v of vs) if (stripAccents(v) === gs) return { verdict: 'accent', expected: v }
+  for (const v of vs) {
+    if (stripAccents(v) !== gs) continue
+    // tu/tú, el/él, mi/mí… are different words: here the accent is the answer.
+    if (changesMeaning(g, v)) return { verdict: 'wrong', expected: v }
+    return { verdict: 'accent', expected: v }
+  }
 
   if (allowTypo) {
     for (const v of vs) if (isHarmlessTypo(gs, stripAccents(v))) return { verdict: 'typo', expected: v }

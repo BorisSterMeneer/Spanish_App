@@ -12,6 +12,7 @@ export default function App() {
   const [settings, setSettings] = useState<Settings | null>(null)
   const [screen, setScreen] = useState<Screen>('home')
   const [homeKey, setHomeKey] = useState(0)
+  const [practiceUnit, setPracticeUnit] = useState<string | null>(null)
 
   useEffect(() => {
     void getSettings().then(setSettings)
@@ -45,14 +46,32 @@ export default function App() {
 
   switch (screen) {
     case 'session':
-      return <Session settings={settings} onExit={home} />
+      return <Session key={practiceUnit ?? 'daily'} settings={settings} onExit={home} unitId={practiceUnit} />
     case 'grammar':
-      return <Grammar settings={settings} onBack={home} />
+      return (
+        <Grammar
+          settings={settings}
+          onBack={home}
+          onPractise={(id) => {
+            setPracticeUnit(id)
+            setScreen('session')
+          }}
+        />
+      )
     case 'talk':
       return <Talk settings={settings} onBack={home} onSettings={() => setScreen('settings')} />
     case 'settings':
       return <SettingsScreen settings={settings} onChange={setSettings} onBack={home} />
     default:
-      return <Home key={homeKey} settings={settings} go={setScreen} />
+      return (
+        <Home
+          key={homeKey}
+          settings={settings}
+          go={(s) => {
+            setPracticeUnit(null)
+            setScreen(s)
+          }}
+        />
+      )
   }
 }

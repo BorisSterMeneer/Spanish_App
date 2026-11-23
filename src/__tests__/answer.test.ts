@@ -11,6 +11,11 @@ describe('checkAnswer', () => {
     expect(checkAnswer('el nino', ['el niño']).verdict).toBe('accent')
     expect(checkAnswer('adios', ['adiós']).verdict).toBe('accent')
   })
+  it('treats tu/tú, el/él, te/té as different words', () => {
+    expect(checkAnswer('tú', ['tu']).verdict).toBe('wrong')
+    expect(checkAnswer('el es alto', ['Él es alto.']).verdict).toBe('wrong')
+    expect(checkAnswer('Tú eres simpatico', ['Tú eres simpático.']).verdict).toBe('accent')
+  })
   it('accepts a dropped subject pronoun but not an invented one', () => {
     expect(checkAnswer('Es médica', ['Ella es médica.']).verdict).toBe('correct')
     expect(checkAnswer('Yo soy estudiante', ['Soy estudiante.']).verdict).not.toBe('correct')

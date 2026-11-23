@@ -4,6 +4,7 @@ import type { Verdict } from '../lib/answer'
 import { addLog, addPracticeSeconds, getAllCards, getSeenGrammar, markGrammarSeen, putCards } from '../lib/db'
 import { SessionEngine, type Task } from '../lib/session'
 import { verdictToRating } from '../lib/srs'
+import { UNITS } from '../content/curriculum'
 import { speak, sttSupported, ttsSupported } from '../lib/speech'
 import { Exercise } from '../components/Exercise'
 import { GrammarCardView } from '../components/GrammarCardView'
@@ -14,7 +15,7 @@ interface Stats {
   newItems: number
 }
 
-export function Session({ settings, onExit }: { settings: Settings; onExit: () => void }) {
+export function Session({ settings, onExit, unitId = null }: { settings: Settings; onExit: () => void; unitId?: string | null }) {
   const engineRef = useRef<SessionEngine | null>(null)
   const [task, setTask] = useState<Task | null>(null)
   const [taskKey, setTaskKey] = useState(0)
@@ -25,6 +26,7 @@ export function Session({ settings, onExit }: { settings: Settings; onExit: () =
   const [stats, setStats] = useState<Stats>({ answered: 0, correct: 0, newItems: 0 })
   const unsaved = useRef(0)
 
+  const unitTitle = unitId ? UNITS.find((u) => u.id === unitId)?.title : null
   const limit = settings.sessionMinutes * 60 + extraSeconds
   const timeUp = elapsed >= limit
 
@@ -35,7 +37,7 @@ export function Session({ settings, onExit }: { settings: Settings; onExit: () =
       try {
         const [cards, seen] = await Promise.all([getAllCards(), getSeenGrammar()])
         if (cancelled) return
-        const e = new SessionEngine(cards, seen, settings, { tts: ttsSupported, stt: sttSupported })
+        const e = new SessionEngine(cards, seen, settings, { tts: ttsSupported, stt: sttSupported }, Math.random, unitId)
         engineRef.current = e
         setTask(e.next(Date.now()))
       } catch (err) {
@@ -164,6 +166,7 @@ export function Session({ settings, onExit }: { settings: Settings; onExit: () =
         <span className="clock">{timeUp ? 'last one' : `${Math.floor(remaining / 60)}:${String(remaining % 60).padStart(2, '0')}`}</span>
       </header>
 
+      {unitTitle && <div className="small center">Practising: {unitTitle}</div>}
       {!task && <p>Loading…</p>}
 
       {task?.type === 'grammar' && (
