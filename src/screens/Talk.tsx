@@ -47,7 +47,11 @@ export function Talk({ settings, onBack, onSettings }: { settings: Settings; onB
     })
   }, [])
 
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }), [msgs, busy])
+  useEffect(() => {
+    // Braces matter: newer Chrome returns a Promise from scrollIntoView, and
+    // React would try to call a returned value as the effect's cleanup.
+    endRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [msgs, busy])
 
   if (!aiConfigured(settings)) {
     return (
