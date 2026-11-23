@@ -78,7 +78,7 @@ export function Home({ settings, go }: { settings: Settings; go: (s: Screen) => 
       </section>
 
       <nav className="nav">
-        <button onClick={() => go('grammar')}>📖 Grammar</button>
+        <button onClick={() => go('grammar')}>📖 Units</button>
         <button onClick={() => go('talk')}>{aiConfigured(settings) ? '💬 Talk' : '💬 Talk (setup)'}</button>
         <button onClick={() => go('settings')}>⚙️ Settings</button>
       </nav>

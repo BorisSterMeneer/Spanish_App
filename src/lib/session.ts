@@ -46,8 +46,18 @@ export class SessionEngine {
   private settings: Settings
   private caps: Capabilities
   private rng: Rng
+  /** When set, the session only practises (and introduces) items of this unit. */
+  readonly unitId: string | null
 
-  constructor(cards: StoredCard[], seenGrammar: string[], settings: Settings, caps: Capabilities, rng: Rng = Math.random) {
+  constructor(
+    cards: StoredCard[],
+    seenGrammar: string[],
+    settings: Settings,
+    caps: Capabilities,
+    rng: Rng = Math.random,
+    unitId: string | null = null,
+  ) {
+    this.unitId = unitId
     // Ignore cards whose item was removed from the curriculum.
     this.cards = new Map(cards.filter((c) => ITEM_BY_ID.has(c.itemId)).map((c) => [c.id, c]))
     this.seenGrammar = new Set(seenGrammar)
@@ -57,8 +67,10 @@ export class SessionEngine {
   }
 
   /** First item in curriculum order that has no cards yet. */
+  private inScope = (itemId: string) => !this.unitId || UNIT_OF_ITEM.get(itemId)?.id === this.unitId
+
   nextNewItem(): Item | undefined {
-    return ITEMS.find((i) => !this.cards.has(cardIdsFor(i)[0]))
+    return ITEMS.find((i) => this.inScope(i.id) && !this.cards.has(cardIdsFor(i)[0]))
   }
 
   dueCount(now: number): number {
@@ -68,7 +80,7 @@ export class SessionEngine {
   }
 
   next(now: number): Task {
-    const all = [...this.cards.values()]
+    const all = [...this.cards.values()].filter((c) => this.inScope(c.itemId))
     const fresh = (c: StoredCard) => !this.recentItems.includes(c.itemId)
     const pick = (pool: StoredCard[], by: (c: StoredCard) => number): StoredCard | undefined => {
       const preferred = pool.filter(fresh)

@@ -20,6 +20,12 @@ vocabulary, listening and speaking. No hearts, gems, leagues or guilt-trip notif
   6. -er / -ir verbs, question words
   7. Tener, numbers, age, tener que
   8. Gustar
+  9. Querer, poder and other stem-changing verbs
+  10. Ir, ir a + infinitive, days of the week, telling the time
+  11. Family and home, possessives (mi, tu, su, nuestro), hay
+  12. Daily routine, reflexive verbs, frequency words
+- **Practise any unit on demand** (Units screen): replay a unit you've done, or start one early.
+  It counts toward today's minutes and updates your reviews.
 - **Exercises get harder as you learn a card:** pick the meaning → pick the Spanish → type the
   Spanish → dictation (hear it, type it) / say it out loud. Fill-the-gap drills go from multiple
   choice to typing.
@@ -131,8 +137,26 @@ can fix English translations and notes without losing progress, but changing the
 makes it a new item. `npm test` checks for duplicate ids, malformed drills, and drill
 distractors that the answer checker would wrongly accept.
 
-## Possible next steps
+## Content roadmap
 
-- More units (A1 → A2: reflexive verbs, ir a + infinitive, past tense).
-- AI-generated extra drills for the current unit, reviewed by the checker before showing.
-- Pronunciation feedback beyond "recognised / not recognised".
+Units 1–12 cover the core of A1. Planned next, in this order:
+
+**Rest of A1**
+- 13. Food, shopping and prices (numbers 20–100, ¿cuánto cuesta?, quiero / me pone)
+- 14. Describing people and things (colours, adjective position, muy / mucho)
+- 15. Directions and places in town (a la derecha, cerca de, estar + location review)
+- 16. Weather and seasons (hace calor, llueve), months and dates
+
+**A2**
+- Pretérito perfecto (he comido): what you did today / ever
+- Pretérito indefinido (comí, fui): finished past events; regular forms, then ser/ir, tener, hacer
+- Imperfecto (comía): how things used to be; contrast with indefinido
+- Direct and indirect object pronouns (lo, la, le, se lo)
+- Comparatives and superlatives (más… que, el más…)
+- Estar + gerundio (estoy comiendo)
+- Imperative for instructions (habla, no hables) and polite requests
+- Future with ir a vs. simple future (comeré), basic conditional (me gustaría)
+
+Each unit is hand-written and checked by the automated tests before it ships. An optional later
+addition: let the AI tutor generate extra drill sentences that use only words you have already
+studied, shown after the answer checker has validated them.

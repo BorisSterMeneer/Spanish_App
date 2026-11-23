@@ -87,6 +87,21 @@ describe('SessionEngine', () => {
     expect(cards.some((c) => c.stability > 7)).toBe(true)
   })
 
+  it('unit practice only shows that unit, and can start a unit early', () => {
+    const rng = seeded(11)
+    const e = new SessionEngine([], [], DEFAULT_SETTINGS, { tts: true, stt: true }, rng, 'u5')
+    const first = e.next(0)
+    expect(first).toMatchObject({ type: 'grammar', unit: { id: 'u5' } })
+    const { shown } = simulate(e, 0, 600, 0.85, rng)
+    expect(shown.length).toBeGreaterThan(20)
+    for (const id of shown) expect(id.startsWith('u5:')).toBe(true)
+    // ...and in a fully introduced unit, practice keeps going (extra practice of the weakest cards).
+    const cards = [...e.cards.values()]
+    const e2 = new SessionEngine(cards, ['u5'], { ...DEFAULT_SETTINGS, newPerSession: 0 }, { tts: true, stt: true }, rng, 'u5')
+    const r = simulate(e2, 3_600_000, 300, 0.9, rng)
+    expect(r.shown.length).toBeGreaterThan(20)
+  })
+
   it('never offers speaking or listening when unsupported', () => {
     const rng = seeded(3)
     const card = { id: 'x', itemId: ITEMS[0].id, mode: 'prod', reps: 5, stability: 30 } as StoredCard
